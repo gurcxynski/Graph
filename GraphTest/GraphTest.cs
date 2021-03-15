@@ -7,7 +7,7 @@ namespace GraphTest
     public class GraphTest
     {
         [TestMethod]
-        public void AddingElement()
+        public void AddingPoint()
         {
 
         }
@@ -19,7 +19,7 @@ namespace GraphTest
         }
 
         [TestMethod]
-        public void RemovingElement()
+        public void RemovingPoint()
         {
 
         }
