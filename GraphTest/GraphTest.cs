@@ -4,7 +4,7 @@ using System;
 namespace GraphTest
 {
     [TestClass]
-    public class UnitTest1
+    public class GraphTest
     {
         [TestMethod]
         public void AddingElement()
