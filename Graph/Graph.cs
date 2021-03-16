@@ -1,62 +1,86 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Graph
 {
-    class Node
+    class Vertex
     {
-        private int index;
-        private int nodeValue;
-        public List<int> borders;
-        public Node(int a)
+        private int vertexValue;
+        public readonly int vertexID;
+        public HashSet<int> incomingEdges;
+        public HashSet<int> outgoingEdges;
+        public Vertex(int value, int ID)
         {
-            nodeValue = a;
+            vertexValue = value;
+            vertexID = ID;
+            incomingEdges = new HashSet<int>();
+            outgoingEdges = new HashSet<int>();
         }
-        public int getNodeValue()
+        public int GetNodeValue()
         {
-            return nodeValue;
+            return vertexValue;
         }
-        public int getNodeIndex()
+        public void Link(Vertex vertexArgument)
         {
-            return index;
+            outgoingEdges.Add(vertexArgument.vertexID);
+            vertexArgument.incomingEdges.Add(vertexID);
+        }
+        public void UnLink(Vertex nodeArgument)
+        {
+            outgoingEdges.Remove(nodeArgument.vertexID);
+            nodeArgument.incomingEdges.Remove(vertexID);
         }
     }
     class Graph
     {
-        public int lenght;
-        public List<Node> nodes;
+        public Dictionary<int, Vertex> vertices;
+        private int nextID;
         public Graph()
         {
-            nodes = new List<Node>();
-            lenght = 0;
+            vertices = new Dictionary<int, Vertex>();
+            nextID = 0;
         }
         public bool Link(int a, int b)
         {
-            if (nodes[a] == null || nodes[b] == null || a == b) return false;
-            nodes[a].borders.Add(b);
-            return true;
+            if (vertices.ContainsKey(a) && vertices.ContainsKey(b))
+            {
+                Vertex from = vertices[a];
+                Vertex to = vertices[b];
+                from.Link(to);
+                return true;
+            }
+            return false;
         }
         public bool Unlink(int a, int b)
         {
-            if (nodes[a] == null || nodes[b] == null || a == b) return false;
-            if (!nodes[a].borders.Remove(b)) return false;
-            return true;
+            if (vertices.ContainsKey(a) && vertices.ContainsKey(b))
+            {
+                Vertex from = vertices[a];
+                Vertex to = vertices[b];
+                from.UnLink(to);
+                return true;
+            }
+            return false;
         }
-        public Node Add(int a)
+        public int Add(int value)
         {
-            nodes.Add(new Node(a));
-            lenght++;
-            nodes[nodes.Count - 1].borders = new List<int>();
-            return nodes[nodes.Count - 1];
+            Vertex temp = new Vertex(value, nextID);
+            vertices.Add(nextID, temp);
+            nextID++;
+            return temp.vertexID;
         }
         public void Remove(int a)
         {
-            foreach (var item in nodes)
+            if (!vertices.ContainsKey(a)) return;
+            Vertex nodeToRemove = vertices[a];
+            foreach (var item in nodeToRemove.outgoingEdges)
             {
-                if (item.getNodeIndex() == a) nodes.Remove(item);
+                nodeToRemove.UnLink(vertices[item]);
             }
-            lenght--;
+            foreach (var item in nodeToRemove.incomingEdges)
+            {
+                vertices[item].UnLink(nodeToRemove);
+            }
+            vertices.Remove(a);
         }
     }
 }

@@ -7,25 +7,25 @@ namespace GraphTest
     public class GraphTest
     {
         [TestMethod]
-        public void AddingPoint()
+        public void AddingVertex()
         {
 
         }
 
         [TestMethod]
-        public void AddingBorder()
+        public void AddingEdge()
         {
 
         }
 
         [TestMethod]
-        public void RemovingPoint()
+        public void RemovingVertex()
         {
 
         }
 
         [TestMethod]
-        public void RemovingBorder()
+        public void RemovingEdge()
         {
 
         }
