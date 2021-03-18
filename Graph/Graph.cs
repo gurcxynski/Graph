@@ -6,23 +6,23 @@ namespace Graph
     {
         private int vertexValue;
         public readonly int vertexID;
-        public HashSet<int> incomingEdges;
-        public HashSet<int> outgoingEdges;
+        public Dictionary<int, int> incomingEdges;
+        public Dictionary<int, int> outgoingEdges;
         public Vertex(int value, int ID)
         {
             vertexValue = value;
             vertexID = ID;
-            incomingEdges = new HashSet<int>();
-            outgoingEdges = new HashSet<int>();
+            incomingEdges = new Dictionary<int, int>();
+            outgoingEdges = new Dictionary<int, int>();
         }
         public int GetNodeValue()
         {
             return vertexValue;
         }
-        public void Link(Vertex vertexArgument)
+        public void Link(Vertex vertexArgument, int value)
         {
-            outgoingEdges.Add(vertexArgument.vertexID);
-            vertexArgument.incomingEdges.Add(vertexID);
+            outgoingEdges.Add(vertexArgument.vertexID, value);
+            vertexArgument.incomingEdges.Add(vertexID, value);
         }
         public void UnLink(Vertex nodeArgument)
         {
@@ -39,13 +39,13 @@ namespace Graph
             vertices = new Dictionary<int, Vertex>();
             nextID = 0;
         }
-        public bool Link(int a, int b)
+        public bool Link(int firstEdge, int secondEdge, int value)
         {
-            if (vertices.ContainsKey(a) && vertices.ContainsKey(b))
+            if (vertices.ContainsKey(firstEdge) && vertices.ContainsKey(secondEdge))
             {
-                Vertex from = vertices[a];
-                Vertex to = vertices[b];
-                from.Link(to);
+                Vertex from = vertices[firstEdge];
+                Vertex to = vertices[secondEdge];
+                from.Link(to, value);
                 return true;
             }
             return false;
@@ -74,11 +74,11 @@ namespace Graph
             Vertex nodeToRemove = vertices[a];
             foreach (var item in nodeToRemove.outgoingEdges)
             {
-                nodeToRemove.UnLink(vertices[item]);
+                nodeToRemove.UnLink(vertices[item.Key]);
             }
             foreach (var item in nodeToRemove.incomingEdges)
             {
-                vertices[item].UnLink(nodeToRemove);
+                vertices[item.Key].UnLink(nodeToRemove);
             }
             vertices.Remove(a);
         }
