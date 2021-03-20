@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Graph
@@ -16,7 +17,7 @@ namespace Graph
             incomingEdges = new HashSet<int>();
             outgoingEdges = new HashSet<int>();
         }
-        public int GetNodeValue()
+        public int GetVertexValue()
         {
             return vertexValue;
         }
@@ -25,13 +26,13 @@ namespace Graph
             outgoingEdges.Add(vertexArgument.vertexID);
             vertexArgument.incomingEdges.Add(vertexID);
         }
-        public int getNodeIndex()
+        public void UnLink(Vertex vertexArgument)
         {
-            outgoingEdges.Remove(nodeArgument.vertexID);
-            nodeArgument.incomingEdges.Remove(vertexID);
+            outgoingEdges.Remove(vertexArgument.vertexID);
+            vertexArgument.incomingEdges.Remove(vertexID);
         }
     }
-    class Graph : IEnumerable<Node>
+    class Graph : IEnumerable<Vertex>
     {
         public Dictionary<int, Vertex> vertices;
         private int nextID;
@@ -64,38 +65,29 @@ namespace Graph
         }
         public int Add(int value)
         {
-            nodes.Add(new Node(a));
-            lenght++;
-            nodes[nodes.Count - 1].borders = new List<int>();
-            return nodes[nodes.Count - 1];
-        }
+            vertices[nextID] = new Vertex(value, nextID);
+            int temp = nextID;
+            nextID++;
+            return temp;
+        } 
         public void RemoveAtIndex(int removedIndex)
         {
-            if (!vertices.ContainsKey(a)) return;
-            Vertex nodeToRemove = vertices[a];
-            foreach (var item in nodeToRemove.outgoingEdges)
+            if (vertices.ContainsKey(removedIndex))
             {
-                nodeToRemove.UnLink(vertices[item]);
-            }
-            foreach (var item in nodeToRemove.incomingEdges)
-            {
-                if (item.getNodeIndex() == a) nodes.Remove(item);
-            }
-            lenght--;
-        }
-        public void RemoveNumber(int removedNumber)
-        {
-            foreach (var item in nodes)
-            {
-                if (item.getNodeValue() == removedNumber)
+                vertices.Remove(removedIndex);
+                if (removedIndex != vertices.Count - 1)
                 {
-                    nodes.Remove(item);
-                    return;
+                    vertices.Add(removedIndex, vertices[removedIndex + 1]);
+                    for (int i = removedIndex + 1; i < vertices.Count - 1; i++)
+                    {
+                        vertices[i] = vertices[i + 1];
+                    }
+                    vertices.Remove(vertices.Count - 1);
                 }
+                nextID--;
             }
-            lenght--;
         }
-        public IEnumerator<Node> GetEnumerator()
+        public IEnumerator<Vertex> GetEnumerator()
         {
             return new GraphEnumerator(this);
         }
@@ -105,21 +97,21 @@ namespace Graph
             return new GraphEnumerator(this);
         }
     }
-    class GraphEnumerator : IEnumerator<Node>
+    class GraphEnumerator : IEnumerator<Vertex>
     {
         private Graph currentGraph;
-        private Node currentNode;
-        public Node Current
+        private Vertex currentVertex;
+        public Vertex Current
         {
             get
             {
-                if (currentNode == null)
+                if (currentVertex == null)
                 {
-                    return default(Node);
+                    return null;
                 }
                 else
                 {
-                    return currentNode;
+                    return currentVertex;
                 }
             }
         }
@@ -128,42 +120,32 @@ namespace Graph
         {
             get
             {
-                if (currentNode == null)
+                if (currentVertex == null)
                 {
-                    return default(Node);
+                    return null;
                 }
                 else
                 {
-                    return currentNode;
+                    return currentVertex;
                 }
             }
         }
-
         public GraphEnumerator(Graph graphArgument)
         {
             currentGraph = graphArgument;
-            currentNode = default(Node);
-        }
-
-        public void Dispose()
-        {
-
+            currentVertex = null;
         }
 
         public bool MoveNext()
         {
-            if (currentNode == default(Node))
+            if (currentVertex == null)
             {
-                if (currentGraph.nodes.Count != 0)
-                {
-                    currentNode = currentGraph.nodes[0];
-                    return true;
-                }
-                else return false;
+                currentVertex = currentGraph.vertices[0];
+                return true;
             }
-            if (currentNode.getNodeIndex() < currentGraph.nodes.Count - 1)
+            else if (currentVertex.vertexID < currentGraph.vertices.Count - 1) 
             {
-                currentNode = currentGraph.nodes[currentNode.getNodeIndex() + 1];
+                currentVertex = currentGraph.vertices[currentVertex.vertexID + 1];
                 return true;
             }
             return false;
@@ -171,7 +153,12 @@ namespace Graph
 
         public void Reset()
         {
-            currentNode = default(Node);
+            currentVertex = null;
+        }
+
+        public void Dispose()
+        {
+
         }
     }
 }
