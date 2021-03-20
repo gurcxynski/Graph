@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Graph
 {
@@ -24,13 +25,13 @@ namespace Graph
             outgoingEdges.Add(vertexArgument.vertexID);
             vertexArgument.incomingEdges.Add(vertexID);
         }
-        public void UnLink(Vertex nodeArgument)
+        public int getNodeIndex()
         {
             outgoingEdges.Remove(nodeArgument.vertexID);
             nodeArgument.incomingEdges.Remove(vertexID);
         }
     }
-    class Graph
+    class Graph : IEnumerable<Node>
     {
         public Dictionary<int, Vertex> vertices;
         private int nextID;
@@ -63,12 +64,12 @@ namespace Graph
         }
         public int Add(int value)
         {
-            Vertex temp = new Vertex(value, nextID);
-            vertices.Add(nextID, temp);
-            nextID++;
-            return temp.vertexID;
+            nodes.Add(new Node(a));
+            lenght++;
+            nodes[nodes.Count - 1].borders = new List<int>();
+            return nodes[nodes.Count - 1];
         }
-        public void Remove(int a)
+        public void RemoveAtIndex(int removedIndex)
         {
             if (!vertices.ContainsKey(a)) return;
             Vertex nodeToRemove = vertices[a];
@@ -78,9 +79,99 @@ namespace Graph
             }
             foreach (var item in nodeToRemove.incomingEdges)
             {
-                vertices[item].UnLink(nodeToRemove);
+                if (item.getNodeIndex() == a) nodes.Remove(item);
             }
-            vertices.Remove(a);
+            lenght--;
+        }
+        public void RemoveNumber(int removedNumber)
+        {
+            foreach (var item in nodes)
+            {
+                if (item.getNodeValue() == removedNumber)
+                {
+                    nodes.Remove(item);
+                    return;
+                }
+            }
+            lenght--;
+        }
+        public IEnumerator<Node> GetEnumerator()
+        {
+            return new GraphEnumerator(this);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return new GraphEnumerator(this);
+        }
+    }
+    class GraphEnumerator : IEnumerator<Node>
+    {
+        private Graph currentGraph;
+        private Node currentNode;
+        public Node Current
+        {
+            get
+            {
+                if (currentNode == null)
+                {
+                    return default(Node);
+                }
+                else
+                {
+                    return currentNode;
+                }
+            }
+        }
+
+        object IEnumerator.Current
+        {
+            get
+            {
+                if (currentNode == null)
+                {
+                    return default(Node);
+                }
+                else
+                {
+                    return currentNode;
+                }
+            }
+        }
+
+        public GraphEnumerator(Graph graphArgument)
+        {
+            currentGraph = graphArgument;
+            currentNode = default(Node);
+        }
+
+        public void Dispose()
+        {
+
+        }
+
+        public bool MoveNext()
+        {
+            if (currentNode == default(Node))
+            {
+                if (currentGraph.nodes.Count != 0)
+                {
+                    currentNode = currentGraph.nodes[0];
+                    return true;
+                }
+                else return false;
+            }
+            if (currentNode.getNodeIndex() < currentGraph.nodes.Count - 1)
+            {
+                currentNode = currentGraph.nodes[currentNode.getNodeIndex() + 1];
+                return true;
+            }
+            return false;
+        }
+
+        public void Reset()
+        {
+            currentNode = default(Node);
         }
     }
 }
