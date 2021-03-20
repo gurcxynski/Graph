@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Graph
 {
@@ -15,7 +17,7 @@ namespace Graph
             incomingEdges = new Dictionary<int, int>();
             outgoingEdges = new Dictionary<int, int>();
         }
-        public int GetNodeValue()
+        public int GetVertexValue()
         {
             return vertexValue;
         }
@@ -24,13 +26,13 @@ namespace Graph
             outgoingEdges.Add(vertexArgument.vertexID, value);
             vertexArgument.incomingEdges.Add(vertexID, value);
         }
-        public void UnLink(Vertex nodeArgument)
+        public void UnLink(Vertex vertexArgument)
         {
-            outgoingEdges.Remove(nodeArgument.vertexID);
-            nodeArgument.incomingEdges.Remove(vertexID);
+            outgoingEdges.Remove(vertexArgument.vertexID);
+            vertexArgument.incomingEdges.Remove(vertexID);
         }
     }
-    class Graph
+    class Graph : IEnumerable<Vertex>
     {
         public Dictionary<int, Vertex> vertices;
         private int nextID;
@@ -63,24 +65,100 @@ namespace Graph
         }
         public int Add(int value)
         {
-            Vertex temp = new Vertex(value, nextID);
-            vertices.Add(nextID, temp);
+            vertices[nextID] = new Vertex(value, nextID);
+            int temp = nextID;
             nextID++;
-            return temp.vertexID;
-        }
-        public void Remove(int a)
+            return temp;
+        } 
+        public void RemoveAtIndex(int removedIndex)
         {
-            if (!vertices.ContainsKey(a)) return;
-            Vertex nodeToRemove = vertices[a];
-            foreach (var item in nodeToRemove.outgoingEdges)
+            if (vertices.ContainsKey(removedIndex))
             {
-                nodeToRemove.UnLink(vertices[item.Key]);
+                vertices.Remove(removedIndex);
+                if (removedIndex != vertices.Count - 1)
+                {
+                    vertices.Add(removedIndex, vertices[removedIndex + 1]);
+                    for (int i = removedIndex + 1; i < vertices.Count - 1; i++)
+                    {
+                        vertices[i] = vertices[i + 1];
+                    }
+                    vertices.Remove(vertices.Count - 1);
+                }
+                nextID--;
             }
-            foreach (var item in nodeToRemove.incomingEdges)
+        }
+        public IEnumerator<Vertex> GetEnumerator()
+        {
+            return new GraphEnumerator(this);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return new GraphEnumerator(this);
+        }
+    }
+    class GraphEnumerator : IEnumerator<Vertex>
+    {
+        private Graph currentGraph;
+        private Vertex currentVertex;
+        public Vertex Current
+        {
+            get
             {
-                vertices[item.Key].UnLink(nodeToRemove);
+                if (currentVertex == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return currentVertex;
+                }
             }
-            vertices.Remove(a);
+        }
+
+        object IEnumerator.Current
+        {
+            get
+            {
+                if (currentVertex == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return currentVertex;
+                }
+            }
+        }
+        public GraphEnumerator(Graph graphArgument)
+        {
+            currentGraph = graphArgument;
+            currentVertex = null;
+        }
+
+        public bool MoveNext()
+        {
+            if (currentVertex == null)
+            {
+                currentVertex = currentGraph.vertices[0];
+                return true;
+            }
+            else if (currentVertex.vertexID < currentGraph.vertices.Count - 1) 
+            {
+                currentVertex = currentGraph.vertices[currentVertex.vertexID + 1];
+                return true;
+            }
+            return false;
+        }
+
+        public void Reset()
+        {
+            currentVertex = null;
+        }
+
+        public void Dispose()
+        {
+
         }
     }
 }
