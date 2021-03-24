@@ -7,7 +7,7 @@ namespace Graph
     class Vertex
     {
         private int vertexValue;
-        public readonly int vertexID;
+        public int vertexID;
         public Dictionary<int, int> incomingEdges;
         public Dictionary<int, int> outgoingEdges;
         public Vertex(int value, int ID)
@@ -16,6 +16,10 @@ namespace Graph
             vertexID = ID;
             incomingEdges = new Dictionary<int, int>();
             outgoingEdges = new Dictionary<int, int>();
+        }
+        public void SetVertexID(int value)
+        {
+            vertexID = value;
         }
         public int GetVertexValue()
         {
@@ -30,6 +34,11 @@ namespace Graph
         {
             outgoingEdges.Remove(vertexArgument.vertexID);
             vertexArgument.incomingEdges.Remove(vertexID);
+        }
+        public void UnLinkFrom(int ID)
+        {
+            outgoingEdges.Remove(ID);
+            incomingEdges.Remove(ID);
         }
     }
     class Graph : IEnumerable<Vertex>
@@ -74,17 +83,29 @@ namespace Graph
         {
             if (vertices.ContainsKey(removedIndex))
             {
-                vertices.Remove(removedIndex);
-                if (removedIndex != vertices.Count - 1)
+                foreach (var item in vertices)
                 {
-                    vertices.Add(removedIndex, vertices[removedIndex + 1]);
-                    for (int i = removedIndex + 1; i < vertices.Count - 1; i++)
+                    item.Value.UnLinkFrom(removedIndex);
+                }
+                vertices.Remove(removedIndex);
+                if(removedIndex < vertices.Count - 1) 
+                { 
+                    int i = removedIndex;
+                    for (; i < vertices.Count - 1; i++)
                     {
                         vertices[i] = vertices[i + 1];
+                        vertices[i].SetVertexID(i);
                     }
-                    vertices.Remove(vertices.Count - 1);
+                    if (i == vertices.Count - 1)
+                    {
+                        vertices.Remove(i);
+                    }
                 }
-                nextID--;
+                if(removedIndex == vertices.Count - 1)
+                {
+                    int value = vertices[removedIndex + 1].GetVertexValue();
+
+                }
             }
         }
         public IEnumerator<Vertex> GetEnumerator()
