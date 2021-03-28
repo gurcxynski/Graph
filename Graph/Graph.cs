@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 
 namespace Graph
@@ -32,18 +31,19 @@ namespace Graph
             vertexArgument.incomingEdges.Remove(vertexID);
         }
     }
-    class Graph : IEnumerable<Vertex>
+    class Graph: IEnumerable<Vertex>
     {
         public Dictionary<int, Vertex> vertices;
         private int nextID;
-        private HashSet<int> counted = new HashSet<int>();
-        private HashSet<int> notCounted = new HashSet<int>();
-        public Dictionary<int, int> lenghts = new Dictionary<int, int>();
 
         public Graph()
         {
             vertices = new Dictionary<int, Vertex>();
             nextID = 0;
+        }
+        public int getID()
+        {
+            return nextID;
         }
         public bool Link(int firstEdge, int secondEdge, int value)
         {
@@ -91,41 +91,6 @@ namespace Graph
                 nextID--;
             }
         }
-
-        public void Dijkstra(int source)
-        {
-            lenghts.Add(source, 0);
-            for(int i = 0; i < nextID; i++)
-            {
-                if (i != source)
-                {
-                    lenghts.Add(i, int.MaxValue);
-                }
-
-            }
-            for (int i = 0; i < nextID; i++)
-            {
-                notCounted.Add(i);
-            }
-            while(notCounted.Count != 0)
-            {
-                int minValue = int.MaxValue;
-                foreach (var item in notCounted)
-                {
-                    if (item < minValue) minValue = item;
-                }
-                notCounted.Remove(minValue);
-                counted.Add(minValue);
-                foreach (var item in vertices[minValue].outgoingEdges)
-                {
-                    if (lenghts[item.Key] > (lenghts[minValue] + item.Value))
-                    {
-                        lenghts[item.Key] = (lenghts[minValue] + item.Value);
-                    }
-                }
-            }
-        }
-
 
         public IEnumerator<Vertex> GetEnumerator()
         {
