@@ -16,6 +16,13 @@ namespace Graph
             notCounted = new HashSet<int>();
             lenghts = new Dictionary<int, int>();
         }
+        public void Reset(Graph calculatedGraph)
+        {
+            this.calculatedGraph = calculatedGraph;
+            counted = new HashSet<int>();
+            notCounted = new HashSet<int>();
+            lenghts = new Dictionary<int, int>();
+        }
 
         private void InitiateLenghts(int source)
         {

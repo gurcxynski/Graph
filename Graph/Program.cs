@@ -38,7 +38,7 @@ namespace Graph
             graf2.Link(3, 4, 4);
             Dijkstra calculator = new Dijkstra(graf);
             Dictionary<int, int> answer1 =  calculator.MainAlgorithm(0);
-            calculator = new Dijkstra(graf2);
+            calculator.Reset(graf2);
             Dictionary<int, int> answer2 = calculator.MainAlgorithm(0);
             foreach (var item in answer1)
             {
