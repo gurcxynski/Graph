@@ -1,26 +1,22 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Priority_Queue;
 
 namespace Graph
 {
     internal class Dijkstra
     {
         Graph calculatedGraph;
-        private HashSet<int> counted;
-        private HashSet<int> notCounted;
         private Dictionary<int, int> lenghts;
 
         public Dijkstra(Graph calculatedGraph)
         {
             this.calculatedGraph = calculatedGraph;
-            counted = new HashSet<int>();
-            notCounted = new HashSet<int>();
             lenghts = new Dictionary<int, int>();
         }
         public void Reset(Graph calculatedGraph)
         {
             this.calculatedGraph = calculatedGraph;
-            counted = new HashSet<int>();
-            notCounted = new HashSet<int>();
             lenghts = new Dictionary<int, int>();
         }
 
@@ -36,31 +32,23 @@ namespace Graph
 
             }
         }
-        private void InitiatePriorityList()
+        public Dictionary<int, int> MainAlgorithm(int source)
         {
-            for (int i = 0; i < calculatedGraph.getID(); i++)
-            {
-                notCounted.Add(i);
-            }
-        }
-        public Dictionary<int,int> MainAlgorithm(int source)
-        {
+            SimplePriorityQueue<int> priorityQueue = new SimplePriorityQueue<int>();
             InitiateLenghts(source);
-            InitiatePriorityList();
-            while (notCounted.Count != 0)
+            priorityQueue.Enqueue(source, 0);
+            while (priorityQueue.Any())
             {
-                int minValue = int.MaxValue;
-                foreach (var item in notCounted)
+
+                int operatedVertex = priorityQueue.First();
+                priorityQueue.Dequeue();
+                foreach (var item in calculatedGraph.vertices[operatedVertex].outgoingEdges)
                 {
-                    if (item < minValue) minValue = item;
-                }
-                notCounted.Remove(minValue);
-                counted.Add(minValue);
-                foreach (var item in calculatedGraph.vertices[minValue].outgoingEdges)
-                {
-                    if (lenghts[item.Key] > (lenghts[minValue] + item.Value))
+                    int newLenght = lenghts[operatedVertex] + item.Value;
+                    if (lenghts[item.Key] > newLenght)
                     {
-                        lenghts[item.Key] = (lenghts[minValue] + item.Value);
+                        lenghts[item.Key] = newLenght;
+                        priorityQueue.Enqueue(item.Key, newLenght);
                     }
                 }
             }
