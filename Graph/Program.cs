@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Graph
+namespace GraphNamespace
 {
     class Program
     {
@@ -24,7 +24,7 @@ namespace Graph
             graf.Link(4, 5, 2);
             graf.Link(5, 3, 1);
             Dijkstra calculator = new Dijkstra(graf);
-            Dictionary<int, int> answer1 =  calculator.MainAlgorithm(0);
+            Dictionary<int, int> answer1 = calculator.MainAlgorithm(0);
             foreach (var item in answer1)
             {
                 Console.Write(item.Key);

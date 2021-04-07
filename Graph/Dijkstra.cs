@@ -2,7 +2,7 @@
 using System.Linq;
 using Priority_Queue;
 
-namespace Graph
+namespace GraphNamespace
 {
     internal class Dijkstra
     {

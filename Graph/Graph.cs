@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Graph
+namespace GraphNamespace
 {
-    class Vertex
+    public class Vertex
     {
         private int vertexValue;
         public readonly int vertexID;
@@ -31,7 +31,7 @@ namespace Graph
             vertexArgument.incomingEdges.Remove(vertexID);
         }
     }
-    class Graph: IEnumerable<Vertex>
+    public class Graph: IEnumerable<Vertex>
     {
         public Dictionary<int, Vertex> vertices;
         private int nextID;
@@ -102,7 +102,7 @@ namespace Graph
             return new GraphEnumerator(this);
         }
     }
-    class GraphEnumerator : IEnumerator<Vertex>
+    public class GraphEnumerator : IEnumerator<Vertex>
     {
         private Graph currentGraph;
         private Vertex currentVertex;
