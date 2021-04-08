@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31105.61
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Graph", "Graph\Graph.csproj", "{F414F4FE-6B05-4C56-AE19-4FE0B29E3810}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testgraphdotnetcore", "testgraphdotnetcore\testgraphdotnetcore.csproj", "{67BAAC7C-972C-43F9-BAC5-DE992EB6D155}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testgraph", "testgraphdotnetcore\testgraph.csproj", "{67BAAC7C-972C-43F9-BAC5-DE992EB6D155}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
